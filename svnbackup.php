@@ -12,7 +12,8 @@ require_once 'configure.php';
 define('DEFAULT_MAX_DEPTH', 2);
 $optionsMap = array(
     'r' => 'recursive',
-    'R' => 'recursive'
+    'R' => 'recursive',
+	'q' => 'quiet',
     );
 
 require_once 'FileSystem.php';
@@ -35,6 +36,11 @@ elseif(Arguments::getArgnum() == 1) // list
     $directory = Arguments::getFirstArg();
     if(!FileSystem::isDirectoryReadable($directory))
         Output::displayErrorAndExit("The $directory is not readable directory.");
+        
+        
+    // Main part
+    if(Arguments::hasOption('quiet'))
+        ob_start();
         
     echo "Base directory: " . $directory . PHP_EOL . PHP_EOL;
 
@@ -65,7 +71,10 @@ elseif(Arguments::getArgnum() == 1) // list
     printf("%d %s", 
         count($data), 
         count($data) > 1 ? "repositories were found." : "repository was found.");
-    echo PHP_EOL;    
+    echo PHP_EOL;
+
+    if(Arguments::hasOption('quiet'))
+      $content = ob_get_clean();
 }
 
 function help()
@@ -74,8 +83,13 @@ function help()
 @name @version 
 The tool for backuping subversion repositories on server side.
 
-@name REPOSITORIES_PATH
-  * scan repositories and show info about them 
+@name REPOSITORIES_PATH [parameters]
+  * scan repositories and show info about them
+
+
+ADDITONAL PARAMETERS
+-r -R --recursive		Recursive scanning of directories (10 is max level)
+-q    --quiet			Don't output anything
 
 HELP;
 }

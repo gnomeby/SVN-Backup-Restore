@@ -4,7 +4,7 @@ final class Arguments {
     static $args = null;
     static $options = null;
         
-    static function parse()
+    static function parse($optionsMap)
     {
         $argc = $_SERVER['argc'];
         $argv = $_SERVER['argv'];
@@ -19,12 +19,14 @@ final class Arguments {
               if(strpos($option, '=') !== FALSE)
                   list($option, $value) = explode("=", $option, 2);
               
+              $option = self::unmap($option, $optionsMap);
               self::$options[$i] = array('name' => $option, 'value' => $value, 'num' => $i);
           }
           elseif(preg_match("/^-./", $argv[$i]))
           {
               $option = preg_replace("/^-/", "", $argv[$i]);
               
+              $option = self::unmap($option, $optionsMap);
               self::$options[$i] = array('name' => $option, 'value' => null, 'num' => $i);
           }
           else
@@ -36,9 +38,26 @@ final class Arguments {
         return true;
     }
     
+    static private function unmap($option, $map)
+    {
+        if(array_key_exists($option, $map))
+            return $map[$option];
+            
+        return $option;
+    }
+    
     static function getArgnum()
     {
         return count(self::$args);
+    }
+    
+    static function getFirstArg()
+    {
+        if(!count(self::$args))
+            return NULL;
+            
+        $args = array_values(self::$args);
+        return $args[0]['value'];
     }
     
     static function hasOption($requiredOption)

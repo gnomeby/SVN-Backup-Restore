@@ -5,12 +5,12 @@ final class SVNLook {
     {
         $command = "svnlook info {$path}";
         
-        $retval = null;
+        $retval = NULL;
         $output = array();
         exec($command, $output, $retval);
         
         if($retval != 0)
-            return null;
+            return NULL;
             
         $info = array();
         $info['author'] = $output[0];
@@ -20,5 +20,28 @@ final class SVNLook {
         $info['comment'] = $output[3];
         
         return $info;
+    }
+    
+    static function getVersion()
+    {
+        static $version = null;
+        if($version)
+            return $version;
+        
+        $command = "svnlook --version";
+        
+        $retval = NULL;
+        $output = array();
+        exec($command, $output, $retval);
+        
+        if($retval != 0)
+            return NULL;
+            
+        $m = array();
+        if(!preg_match("/svnlook[^\w]+version[^\w]+([0-9.]+)/", $output[0], $m))
+            return NULL;
+        $version = $m[1]; 
+            
+        return $version;
     }
 }

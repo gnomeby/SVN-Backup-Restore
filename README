@@ -5,3 +5,6 @@ The tools for backuping and restoring subversion repositories on server side.
 
 Features:
 * Recursive scan folders and find repositories
+* Show short info about repositories
+* Show recommendations for repositories:
+** Recommend upgrading

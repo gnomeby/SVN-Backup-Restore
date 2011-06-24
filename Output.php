@@ -1,8 +1,14 @@
 <?php
 final class Output {
+    
+    static function outputError($error)
+    {
+        fwrite(STDERR, "[\033[1;31m"."Error"."\033[0m] $error".PHP_EOL);
+    }
+    
     static function displayErrorAndExit($error)
     {
-        echo "[\033[1;31m"."Error"."\033[0m] $error".PHP_EOL;
+        self::outputError($error);
         exit;
     }
     

@@ -15,15 +15,22 @@ final class SVNAdminExtended {
         if(!$maxRecursionDepth)
             return $repositories;
         
-        $handler = opendir($folder);
-        while (($item = readdir($handler)) !== FALSE) 
+        $handler = is_readable($folder) ? opendir($folder) : FALSE;
+        if($handler)
         {
-            if($item == '.' || $item == '..')
-                continue;
-            if($maxRecursionDepth && is_dir($folder.DS.$item))
-                $repositories = array_merge($repositories, self::findRepositories($folder.DS.$item, $maxRecursionDepth - 1));
+            while (($item = readdir($handler)) !== FALSE) 
+            {
+                if($item == '.' || $item == '..')
+                    continue;
+                if($maxRecursionDepth && is_dir($folder.DS.$item))
+                    $repositories = array_merge($repositories, self::findRepositories($folder.DS.$item, $maxRecursionDepth - 1));
+            }
+            closedir($handler);
         }
-        closedir($handler);
+        else
+        {
+            Output::outputError("{$folder} is not readable.");
+        }
 
         return $repositories;
     }

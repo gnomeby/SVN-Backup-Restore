@@ -130,7 +130,10 @@ final class SVNAdminExtended {
      */
     static function dumpToFile($path, $file)
     {
-        $file .= ".dump";
+        if($file)
+            $file .= ".dump";
+        else
+            $file = "/dev/null";
         
         $command = "svnadmin dump {$path} --quiet";
         $command .= " > " . $file;

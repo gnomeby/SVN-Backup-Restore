@@ -122,7 +122,8 @@ elseif(Arguments::getArgnum() == 2) // backup
         
         foreach($data as $path => &$repository)
         {
-            $size = SVNAdminExtended::dumpToFile($path, $backupFolder . DS . $repository['backupName']);
+            $backupPath = !Arguments::hasOption('debug') ? $backupFolder . DS . $repository['backupName'] : null;
+            $size = SVNAdminExtended::dumpToFile($path, $backupPath);
             $repository['size'] = $size; 
             Output::displayTableBody($tableInfo, array($repository));
         }

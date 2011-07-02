@@ -60,6 +60,15 @@ final class Arguments {
         return $args[0]['value'];
     }
     
+    static function getSecondArg()
+    {
+        if(count(self::$args) < 2)
+            return NULL;
+            
+        $args = array_values(self::$args);
+        return $args[1]['value'];
+    }
+    
     static function hasOption($requiredOption)
     {
         foreach(self::$options as $option)

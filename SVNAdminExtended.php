@@ -120,4 +120,28 @@ final class SVNAdminExtended {
     
         return FALSE;
     }
+    
+    /**
+     * Dump repository into file
+     * 
+     * @param string $path	The path of repository
+     * @param string $file	The name of backup file, excluding extension
+     * @return string		Size of backup file (format: 12345678b or 12345678K)
+     */
+    static function dumpToFile($path, $file)
+    {
+        $file .= ".dump";
+        
+        $command = "svnadmin dump {$path} --quiet";
+        $command .= " > " . $file;
+        
+        $retval = NULL;
+        $output = array();
+        exec($command, $output, $retval);
+        
+        if($retval != 0)
+            return NULL;
+            
+        return filesize($file);
+    }
 }

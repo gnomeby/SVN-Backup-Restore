@@ -14,7 +14,7 @@ final class Output {
     
     static function displayTable($headers, $data)
     {
-        $tableInfo = array('width' => 0, 'height' => 0);
+        $tableInfo = array('width' => 0, 'height' => 0, 'headers' => $headers);
         
         foreach($headers as $name => $cell)
         {
@@ -27,12 +27,12 @@ final class Output {
                     $min_width = max($min_width, strlen($row[$cell['bind']]));
             }
 
-            $headers[$name]['min_width'] = $min_width;  
+            $tableInfo['headers'][$name]['min_width'] = $min_width;  
         }
         
         // Show header names
         $first = TRUE;
-        foreach($headers as $name => $cell)
+        foreach($tableInfo['headers'] as $name => $cell)
         {
             if(!$first)
                 echo "  ";
@@ -44,7 +44,7 @@ final class Output {
 
         // Show lines        
         $first = TRUE;
-        foreach($headers as $name => $cell)
+        foreach($tableInfo['headers'] as $name => $cell)
         {
             if(!$first)
             {
@@ -59,10 +59,17 @@ final class Output {
         $tableInfo['height']++;
         
         // Show data
+        $tableInfo = self::displayTableBody($tableInfo, $data);
+
+        return $tableInfo;
+    }
+    
+    static function displayTableBody($tableInfo, $data)
+    {
         foreach($data as $key => $row)
         {
             $first = TRUE;
-            foreach($headers as $name => $cell)
+            foreach($tableInfo['headers'] as $name => $cell)
             {
                 if(!$first)
                     echo "  ";
@@ -80,7 +87,7 @@ final class Output {
             echo PHP_EOL;
             $tableInfo['height']++;
         }
-
+        
         return $tableInfo;
-    }
+    }    
 }

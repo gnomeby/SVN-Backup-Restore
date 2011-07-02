@@ -9,4 +9,14 @@ final class FileSystem {
             
         return TRUE;
     }
+    
+    static function isDirectoryWritable($directory)
+    {
+        if(!is_dir($directory))
+            return FALSE;
+        if(!is_writable($directory))
+            return FALSE;
+            
+        return TRUE;
+    }
 }

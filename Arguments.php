@@ -4,7 +4,7 @@ final class Arguments {
     static $args = null;
     static $options = null;
         
-    static function parse($optionsMap)
+    static function parse(Array $optionsMap = array())
     {
         $argc = $_SERVER['argc'];
         $argv = $_SERVER['argv'];

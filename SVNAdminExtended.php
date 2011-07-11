@@ -1,4 +1,6 @@
 <?php
+define('SVNADMIN_FOLDER_SEPARATOR', ")");
+
 final class SVNAdminExtended {
     
     static function findRepositories($path, $maxRecursionDepth = 1)
@@ -60,9 +62,25 @@ final class SVNAdminExtended {
                 }    
         }
         
-        $backupName = str_replace(DS, ")", $backupName);
+        $backupName = str_replace(DS, SVNADMIN_FOLDER_SEPARATOR, $backupName);
         
         return $backupName;
+    }
+    
+    static function backupNameToPath($backupName, $basePath = NULL)
+    {
+        $path = str_replace(SVNADMIN_FOLDER_SEPARATOR, DS, $backupName);
+        $path = preg_replace("/\.svndump.*$/", "", $path);
+        
+        if($basePath)
+        {
+            $basePath = realpath($basePath);
+            $basePath = trim($basePath, DS);
+            
+            $path = $basePath . DS . $path;
+        }
+        
+        return $path;
     }
     
     static function getVersion()
@@ -131,12 +149,12 @@ final class SVNAdminExtended {
     static function dumpToFile($path, $file)
     {
         if($file)
-            $file .= ".dump";
+            $file .= ".svndump";
         else
             $file = "/dev/null";
         
-        $command = "svnadmin dump {$path} --quiet";
-        $command .= " > " . $file;
+        $command = "svnadmin dump " . escapeshellarg($path) . " --quiet";
+        $command .= " > " . escapeshellarg($file);
         
         $retval = NULL;
         $output = array();

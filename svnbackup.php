@@ -94,7 +94,8 @@ elseif(Arguments::getArgnum() == 2) // backup
     if(Arguments::hasOption('quiet'))
         ob_start();
         
-    echo "Base directory: " . $directory . PHP_EOL . PHP_EOL;
+    echo "Base directory: " . $directory . PHP_EOL;
+    echo "Backup directory: " . $backupFolder . PHP_EOL . PHP_EOL;
         
     
     $data = SVNAdminExtended::findRepositories($directory, Arguments::hasOption('recursive') ? 10 : 1);
@@ -115,9 +116,13 @@ elseif(Arguments::getArgnum() == 2) // backup
         $headers = array(
             "Repository" => array('bind' => 'backupName'), 
             "Revision"  => array('bind' => 'revision', 'align' => 'right'),
-        	"Size"  => array('bind' => 'size', 'align' => 'right'),
+        	"Size"  => array('bind' => 'size', 'align' => 'right', 'min_width' => 8),
         	"Recommendations"  => array('bind' => 'recommendations'),
         );
+        $min_width = strlen("Repository");
+        foreach ($data as $repository)
+            $min_width = max($min_width, strlen($repository['backupName']));
+        $headers["Repository"]["min_width"] = $min_width;
         $tableInfo = Output::displayTable($headers, array());
         
         foreach($data as $path => &$repository)

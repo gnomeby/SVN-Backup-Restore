@@ -18,7 +18,7 @@ final class Output {
         
         foreach($headers as $name => $cell)
         {
-            $min_width = strlen($name);
+            $min_width = max(strlen($name), array_key_exists("min_width", $cell) ? $cell["min_width"] : 0);
             foreach($data as $key => $row)
             {
                 if($cell['bind'] == '__key')

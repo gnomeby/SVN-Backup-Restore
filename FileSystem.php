@@ -19,4 +19,17 @@ final class FileSystem {
             
         return TRUE;
     }
+    
+    static function filesize($filename)
+    {
+        if(PHP_INT_SIZE > 4)
+            return filesize($filename);
+        else // Support 32 bit systems
+        {
+            $output = '';
+            $retval = 0;
+            exec("ls --size --dereference --block-size=1000 {$filename}", $output, $retval);        
+            return $retval > 0 ? FALSE : ("".(int)$output[0]."000");            
+        }
+    }
 }

@@ -184,7 +184,7 @@ final class SVNAdminExtended {
         if($retval != 0)
             return NULL;
             
-        return filesize($file);
+        return FileSystem::filesize($file);
     }
     
     /**

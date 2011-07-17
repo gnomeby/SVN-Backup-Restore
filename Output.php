@@ -6,6 +6,11 @@ final class Output {
         fwrite(STDERR, "[\033[1;31m"."Error"."\033[0m] $error".PHP_EOL);
     }
     
+    static function outputWarning($warning)
+    {
+        fwrite(STDERR, "[\033[1;33m"."Warn"."\033[0m] $warning".PHP_EOL);
+    }
+    
     static function displayErrorAndExit($error)
     {
         self::outputError($error);

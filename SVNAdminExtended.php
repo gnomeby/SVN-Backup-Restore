@@ -75,7 +75,7 @@ final class SVNAdminExtended {
         if($basePath)
         {
             $basePath = realpath($basePath);
-            $basePath = trim($basePath, DS);
+            $basePath = rtrim($basePath, DS);
             
             $path = $basePath . DS . $path;
         }
@@ -139,6 +139,27 @@ final class SVNAdminExtended {
         return FALSE;
     }
     
+    static function createRepository($path)
+    {
+        if(is_dir($path))
+            return FALSE;
+            
+        $retval = mkdir($path, 0777, TRUE);
+        if(!$retval)
+            return FALSE;
+            
+        $command = "svnadmin create " . escapeshellarg($path);
+        
+        $retval = NULL;
+        $output = array();
+        exec($command, $output, $retval);
+        
+        if($retval != 0)
+            return NULL;
+
+        return TRUE;
+    }
+    
     /**
      * Dump repository into file
      * 
@@ -164,5 +185,27 @@ final class SVNAdminExtended {
             return NULL;
             
         return filesize($file);
+    }
+    
+    /**
+     * Load repository from dump
+     * 
+     * @param string $path	The path of repository
+     * @param string $file	The name of backup file, excluding extension
+     * @return integer		Number of restored revisions
+     */
+    static function loadDump($path, $file)
+    {
+        $command = "cat " . escapeshellarg($file) . " | "; 
+        $command .= "svnadmin load " . escapeshellarg($path) . " --quiet";
+        
+        $retval = NULL;
+        $output = array();
+        exec($command, $output, $retval);
+        
+        if($retval != 0)
+            return NULL;
+            
+        return self::getRepositoryInfo($path);
     }
 }

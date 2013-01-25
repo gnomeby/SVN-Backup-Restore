@@ -586,9 +586,14 @@ final class SvnBackupConfig
         $argv[$i] = 'directory='.$argv[$i];
       elseif(empty($options['destination']))
         $argv[$i] = 'destination='.$argv[$i];
-      
-      list($key, $value) = explode("=", $argv[$i], 2);
-      $options[$key] = $value;
+
+      if(strpos($argv[$i], '=') !== FALSE)
+      {
+        list($key, $value) = explode("=", $argv[$i], 2);
+        $options[$key] = $value;
+      }
+      else
+        $options[$argv[$i]] = null;
     }
 
     if(!empty($options['directory']) && empty($options['destination']))
